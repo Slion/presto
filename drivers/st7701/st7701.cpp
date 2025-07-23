@@ -110,7 +110,6 @@ namespace pimoroni {
   const char CN2BK3SEL[] = {0x77, 0x01, 0x00, 0x00, 0x13};
 
 
-#define DISPLAY_HEIGHT   480
 #define TIMING_V_PULSE   8
 #define TIMING_V_BACK    (5 + TIMING_V_PULSE)
 #define TIMING_V_DISPLAY (DISPLAY_HEIGHT + TIMING_V_BACK)

@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <cstring>
 
+#define DISPLAY_HEIGHT 480
+
 namespace pimoroni {
 
   /// ST7701S display driver
@@ -33,14 +35,10 @@ namespace pimoroni {
     uint spi_sck;
     uint spi_dat;
     uint lcd_bl;
-    uint parallel_sm;
     uint timing_sm;
     uint palette_sm;
-    PIO st_pio;
-    uint parallel_offset;
     uint timing_offset;
     uint palette_offset;
-    uint st_dma;
     uint st_dma2;
     int st_dma3 = -1;
     int st_dma4 = -1;
@@ -87,6 +85,20 @@ namespace pimoroni {
 
     void set_rotation(Rotation rotate);
 
+  protected:
+    PIO st_pio;
+    int display_row = 0;
+    uint16_t* next_line_addr;
+    uint16_t* framebuffer;
+    uint16_t* next_framebuffer = nullptr;
+    int row_shift = 0;
+
+    uint st_dma;
+    uint parallel_sm;
+    uint parallel_offset;
+
+    volatile bool waiting_for_vsync = false;
+
   private:
     void common_init();
     void command(uint8_t command, size_t len = 0, const char *data = NULL) const;
@@ -95,22 +107,15 @@ namespace pimoroni {
     void command_bk1_enable() const;
     void command_bk3_enable() const;
 
-    void start_line_xfer();
-    void start_frame_xfer();
+    virtual void start_line_xfer();
+    virtual void start_frame_xfer();
 
     // Timing status
     uint16_t timing_row = 0;
     uint16_t timing_phase = 0;
-    volatile bool waiting_for_vsync = false;
-
-    uint16_t* framebuffer;
-    uint16_t* next_framebuffer = nullptr;
 
     uint32_t* palette = nullptr;
 
-    uint16_t* next_line_addr;
-    int display_row = 0;
-    int row_shift = 0;
     int fill_row = 0;
   };
 
